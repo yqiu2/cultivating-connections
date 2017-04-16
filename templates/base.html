@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  {% block head %}
+  <meta charset='utf-8'>
+  <meta name=author content="Amy Qiu & Vicki Ngan">
+  <title>Cultivating Connections</title>
+  <link rel="stylesheet" href="http://cs.wellesley.edu/~cs304/css/webdb-style.css">
+  {% endblock %}
+</head>
+
+<body>
+  <div id="menu">
+    {% block menu %}
+    <ul>
+
+      <li><a href="/">home</a></li>
+      <li><a href="/search/">Search by Title</a></li>
+      <li><a href="/select/">Select from Incomplete Movies</a></li>
+
+    </ul>
+    {% endblock %}
+
+  </div>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div id="messages">
+    {% for msg in messages %}
+    <p>{{msg}}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <div id="content">{% block content %}{% endblock %}</div>
+
+
+  <footer>
+   {% block footer %}
+   <p>
+    <a href="http://validator.w3.org/check?uri=referer">
+      <img src="http://cs.wellesley.edu/~cs304/Icons/valid-html5v2.png" alt="Valid HTML 5" title="Valid HTML 5" height="31" width="88">
+    </a>
+    <a href="http://jigsaw.w3.org/css‐validator/check/referer">
+      <img src="http://cs.wellesley.edu/~cs110/Icons/vcss.gif" alt="Valid CSS" title="Valid CSS" height="31" width="88">
+    </a>
+    <a href="http://www.anybrowser.org/campaign/">
+      <img src="http://cs.wellesley.edu/~cs304/Icons/enhanced.gif" height="31" width="88" alt="Viewable With Any Browser" />
+    </a>
+  </p>
+  {% endblock %}
+</footer>
+
+</body>
+</html>
