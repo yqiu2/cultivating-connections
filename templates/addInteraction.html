@@ -1,0 +1,81 @@
+<!-- Vicki Ngan -->
+<!-- Cultivating Connections -->
+
+<!-- THINGS LEFT TO DO: 
+EXTEND FROM BASE.HTML (we should create this together)
+CONSIDER ALLOWING USERS TO LOG MULTIPLE INTERACTIONS AT THE SAME TIME
+THINK ABOUT HOW TO FILL IN DATE AND TIME (TRY TO PREFILL WITH CURRENT DATE)
+MAKE PRETTY -->
+
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name=author content="Vicki Ngan">
+  <title>Add Interaction</title> 
+  <link rel="stylesheet" href="http://cs.wellesley.edu/~cs304/css/webdb-style.css">
+
+</head>
+
+<body>
+    <h1>Add an Interaction!</h1> <!-- can probably come up with a more creative title -->
+
+    <!-- REMOVE THIS AFTER BASE.HTML IS CREATED -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method=POST action=""> <!-- consider letting users add in multiple interactions at the same time -->
+        <label for "menu-cid">Who did you interact with today?</label>
+        <select name="menu-cid">
+          {% for cid, full_name in contacts.iteritems() %}
+              <option value={{cid}}>{{full_name}}</option>
+          {% endfor %}
+        </select>
+        
+        <br>
+        <!-- think about how to create form to automatically fill in current date and time  -->   
+        <label for "date">When did you interact?</label>
+        <input type="date" name="date">
+
+        <br>
+        
+        <label for "menu-quality">What do you think of the interaction?</label>
+        <select name="menu-quality">
+          <option value=0>N/A</option>
+          <option value=5>Excellent</option>
+          <option value=4>Good</option>
+          <option value=3>Fair</option>
+          <option value=2>Poor</option>
+          <option value=1>Terrible</option>
+        </select>
+
+        <br> <!-- consider a counter so that users will know how many characters they can enter -->
+        <textarea rows="4" cols="50" name="notes">Enter text here...</textarea>
+        <br>
+
+        <input type="submit" name="submit-btn" value="Submit">
+    </form>
+
+  <footer>
+    <p> 
+      <a href="http://validator.w3.org/check?uri=referer"> 
+        <img src="http://cs.wellesley.edu/~cs304/Icons/valid-html5v2.png" alt="Valid HTML 5" title="Valid HTML 5" height="31" width="88">
+      </a>
+      <a href="http://jigsaw.w3.org/css‐validator/check/referer"> 
+        <img src="http://cs.wellesley.edu/~cs110/Icons/vcss.gif" alt="Valid CSS" title="Valid CSS" height="31" width="88">
+      </a>
+      <a href="http://www.anybrowser.org/campaign/">
+        <img src="http://cs.wellesley.edu/~cs304/Icons/enhanced.gif" height="31" width="88" alt="Viewable With Any Browser" />
+      </a>
+    </p>
+  </footer>
+
+</body>
+</html>

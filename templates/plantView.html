@@ -1,0 +1,102 @@
+<!-- Vicki Ngan -->
+<!-- Cultivating Connections -->
+<!-- NOTES: consider using template inheritance so that the navbar remains the same --> 
+
+<!-- THINGS LEFT TO DO: 
+EXTEND FROM BASE.HTML (we should create this together)
+ALT URL IS NOT BEHAVING (ASK SCOTT)
+DECIDE ON WHETHER TO MAKE BASIC CONTACT INFORMATION (ADDRESS, ETC) EDITABLE HERE (ON FORM OR POPUP) OR ON ANOTHER PAGE 
+POSSIBLY ADD QUALITY TO INTERACTION LOG (CAN DECIDE LATER, PERHAPS USE QUALITY RATINGS TO SHOW DIFFERENT FACE EXPRESSIONS?) -->
+
+<!doctype html>
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name=author content="Vicki Ngan">
+	<title>Plant View</title> 
+	<style>
+		table {
+		    font-family: arial, sans-serif;
+		    border-collapse: collapse;
+		    width: 100%;
+		}
+
+		td, th {
+		    border: 1px solid #dddddd;
+		    text-align: left;
+		    padding: 8px;
+		}
+
+		tr:nth-child(even) {
+		    background-color: #dddddd;
+		}
+	</style>
+</head>
+
+<body>
+    <h1>Contact</h1>
+
+    <h2>{{contact_info['firstName']}} {{contact_info['lastName']}}</h2>
+
+
+    <!-- REMOVE THIS AFTER BASE.HTML IS CREATED PERHAPS -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- alt = "url_for..." does not seem to work? (ask Scott) --> 
+    <img src="{{url_for('static', filename=contact_info['photo'])}}">
+
+    <img src="{{url_for('static', filename=contact_info['plantPhoto'])}}">
+
+    <!-- MAKE THIS STUFF EDITABLE (maybe refer to another form since this is a lot) -->
+    <p>{{contact_info['firstName']}}'s watering frequency: {{contact_info['wateringFreq']}} days</p>
+    <p>{{contact_info['firstName']}}'s drought resistance: {{contact_info['droughtResist']}} days</p>
+    <p>{{contact_info['firstName']}}'s birthday is on {{contact_info['birthday']}} and she lives at {{contact_info['address']}}. Her phone number is {{contact_info['phnum']}}.</p>
+    <p>Notes about {{contact_info['firstName']}}: {{contact_info['notes']}}</p>
+
+    <!-- What can you do when you have two forms on the same page? (names for buttons?) -->
+    <form action = "" method = "POST" 
+         enctype = "multipart/form-data">
+         <label for "file">Do you want to change {{contact_info['firstName']}}'s profile photo?</label>
+         <input type = "file" name = "file" />
+         <input type="submit" name="submit-btn" value="Submit">
+    </form>
+
+    <!-- POSSIBLY CHANGE HOW THIS LOOKS LATER (add quality) -->
+    <h3>Interactions Log</h3>
+    <table>
+    	<tr>
+    		<th>Date</th> 
+    		<th>Description</th>
+    	</tr>
+    	{% for interaction in interactions %}
+  		<tr>
+    		<td>{{interaction[0]}}</td>
+    		<td>{{interaction[1]}}</td>
+  		</tr>
+  		{% endfor %}
+	</table>
+
+	<footer>
+		<p> 
+			<a href="http://validator.w3.org/check?uri=referer"> 
+				<img src="http://cs.wellesley.edu/~cs304/Icons/valid-html5v2.png" alt="Valid HTML 5" title="Valid HTML 5" height="31" width="88">
+			</a>
+			<a href="http://jigsaw.w3.org/css‐validator/check/referer"> 
+				<img src="http://cs.wellesley.edu/~cs110/Icons/vcss.gif" alt="Valid CSS" title="Valid CSS" height="31" width="88">
+			</a>
+			<a href="http://www.anybrowser.org/campaign/">
+				<img src="http://cs.wellesley.edu/~cs304/Icons/enhanced.gif" height="31" width="88" alt="Viewable With Any Browser" />
+			</a>
+		</p>
+	</footer>
+
+</body>
+</html>
