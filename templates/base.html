@@ -3,7 +3,7 @@
 <head>
   {% block head %}
   <meta charset='utf-8'>
-  <meta name=author content="Amy Qiu & Vicki Ngan">
+  <meta name=author content="Amy Qiu and Vicki Ngan">
   <title>Cultivating Connections</title>
   <link rel="stylesheet" href="http://cs.wellesley.edu/~cs304/css/webdb-style.css">
   {% endblock %}
@@ -14,9 +14,10 @@
     {% block menu %}
     <ul>
 
-      <li><a href="/">home</a></li>
-      <li><a href="/search/">Search by Title</a></li>
-      <li><a href="/select/">Select from Incomplete Movies</a></li>
+      <li><a href="/">welcome</a></li>
+      <li><a href="/garden/"></a></li>
+      <!--       will change addcontact so that it is accessible only from from garden -->
+      <li><a href="/addcontact/">add new contact</a></li> 
 
     </ul>
     {% endblock %}
@@ -32,7 +33,10 @@
   {% endif %}
   {% endwith %}
 
-  <div id="content">{% block content %}{% endblock %}</div>
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
 
 
   <footer>

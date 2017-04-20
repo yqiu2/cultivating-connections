@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}AddContact{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block menu %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<h1>Add Person</h1>
+<form method=POST action="">
+	<table>
+		<tr>
+			<td><label for="contact-name">Name</label></td>
+			<td><input name='contact-name'></td> 
+		</tr>
+		<tr>
+			<td><label for="contact-phnum">Name</label></td>
+			<td><input name='contact-phnum'></td> 
+		</tr>
+		<tr>
+			<td><label for="contact-email">Email</label></td>
+			<td><input name='contact-email'></td>
+		</tr>
+		<tr>
+			<td><label for="contact-address">Address</label></td>
+			<td><input name='contact-address'></td>
+		</tr>
+		<tr>
+			<td><label for="contact-birthday">birthday</label></td>
+			<td><input name='contact-birthday'></td>
+		</tr>
+		<tr>
+			<td><label for="contact-wateringfreq">what is your target interaction frequency (in days)</label></td>
+			<td><input name='contact-wateringfreq' ></td>
+		</tr>
+		<tr>
+			<td><label for="contact-droughtresist">how long (in days) can you safely avoid interacting with this person</label></td>
+			<td><input name='contact-droughtresist' ></td>
+		</tr>
+		<!-- radio button options to select plant to represent your person -->
+		{{plant options}} 
+
+		<tr>
+			<td><label for="contact-photo"></label></td>
+			<input type = "file" name = "contact-photo" />
+			
+		</tr>
+	</form>
+
+
+</table>
+<input type="submit" name="update" value="update">
+</form>
+
+
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+{% endblock %}
