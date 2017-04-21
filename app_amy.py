@@ -22,12 +22,14 @@ def add_contact():
 	if request.method == 'GET':
 		render_template('update.html')
 	else:
+		# process form
 
 
-@app.route('/garde/', methods=["GET", "POST"])
+
+@app.route('/garden/', methods=["GET", "POST"])
 def garden():
 	curs = conn.cursor(MySQLdb.cursors.DictCursor)
-        curs.execute('''SELECT name,  FROM contact_profile, interaction WHERE cid = ?;''', (cid))
+        curs.execute('''SELECT person.name,  FROM contact_profile, interaction WHERE cid = ?;''', (cid))
         results = curs.fetchall()
 	
 
