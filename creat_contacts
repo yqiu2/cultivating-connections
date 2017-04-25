@@ -1,6 +1,6 @@
-
 drop table if exists interaction_log;
 drop table if exists contact_profile; 
+drop table if exists plant_state;
 drop table if exists plant;
 drop table if exists user_profile; 
 
@@ -52,11 +52,11 @@ create table contact_profile (
 ENGINE = InnoDB; 
 
 create table interaction_log (
-       iid integer not null,
+       iid integer not null auto_increment,
        cid integer not null, 
        uid integer not null,
        primary key (iid, cid, uid),
-       duration int, 
+       date int, 
        quality int, 
        notes varchar(256),
        INDEX(iid),
@@ -67,28 +67,31 @@ create table interaction_log (
 )
 ENGINE = InnoDB; 
 
-insert into user_profile (firstName, lastName, password, username)
-values ('Vicki', 'Ngan', 'hihihi', 'vngan');
+insert into user_profile (uid, firstName, lastName, password, username)
+values (1, 'Vicki', 'Ngan', 'hihihi', 'vngan');
 
-insert into plant (pid,image, state, name, description, website)
-values (1, 'rheo_healthy.png', 1, 'Rheo', 'can survive winter conditions in
-Boston', 'rheo.com');
-insert into plant (pid, image, state, name, description, website) 
-values (1, 'rheo_wilted.png', 2, 'Rheo', 'can survive winter conditions in
-Boston', 'rheo.com');
-insert into plant (pid, image, state, name, description, website) 
-values (1, 'rheo_dead.png', 3, 'Rheo', 'can survive winter conditions in
-Boston', 'rheo.com');
+insert into plant (pid, name, description, website)
+values (1, 'Rhoeo', 'aka Moses-in-the-cradle or Boat Lily for its little white
+ flowers that flower in its center. It enjoys partial to full shade and is 
+ susceptible to root rot if it is kept wet too long', 'rheo.com');
+insert into plant_state (pid, image, state)
+values (1, 'rheo_healthy.png', 1);
+insert into plant_state (pid, image, state)
+values (1, 'rheo_wilted.png', 2);
+insert into plant_state (pid, image, state) 
+values (1, 'rheo_dead.png', 3);
 
-insert into contact_profile (uid, pid, wateringFreq, droughtResist, name, photo, birthday, notes, address, phnum) 
-       values (1, 1, 60, 365, 'Amy', 'Qiu', 'yqiu2.png', '1995-03-03', 
+insert into contact_profile (cid, uid, pid, wateringFreq, droughtResist, name, photo, birthday, notes, address, phnum) 
+       values (1, 1, 1, 60, 365, 'Amy Qiu', 'yqiu2.png', '1995-03-03', 
 'friendly', '21 Wellesley College Road', '777-777-7777');
 
-insert into contact_profile (uid, pid, wateringFreq, droughtResist, name, photo, birthday, notes, address, phnum) 
-       values (2, 1, 60, 365, 'Amy', 'Qiu', 'yqiu2.png', '1995-03-03', 
+insert into contact_profile (cid, uid, pid, wateringFreq, droughtResist, name, photo, birthday, notes, address, phnum) 
+       values (2, 1, 1, 14, 7, 'Scott Anderson', 'scott.png', '1995-03-03', 
 'friendly', '21 Wellesley College Road', '888-888-888');
 
+insert into interaction_log ( cid, uid, date, quality, notes) 
+values (1, 1, '2017-04-04 03:00:00', 5, 'met up to do cs304 p2');
 
 insert into interaction_log (cid, uid, date, quality, notes) 
-values (1, 1, '2017-04-04 03:00:00', 5, 'met up to do cs304 p2');
+values (1, 1, '2017-04-05 03:00:00', 5, 'met up to do cs304 p2');
 
