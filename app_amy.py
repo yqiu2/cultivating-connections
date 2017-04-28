@@ -8,6 +8,7 @@ from werkzeug import secure_filename
 app = Flask(__name__)
 import os
 import imghdr
+from datetime import date
 
 app.secret_key = 'cultivating conections is good for you.'
 
@@ -25,14 +26,40 @@ def add_contact():
 		# process form
 
 
-
+# DISPLAY GARDEN 
 @app.route('/garden/', methods=["GET", "POST"])
 def garden():
-	curs = conn.cursor(MySQLdb.cursors.DictCursor)
-        curs.execute('''SELECT person.name,  FROM contact_profile, interaction WHERE cid = ?;''', (cid))
-        results = curs.fetchall()
+    #  PLEASE IMPLEMENT <username>/garden to distinguish between different users
+    username = "vngan"
+	contacts = findcontacts(username)
 	
+def find_contacts(username):
+    curs = conn.cursor(MySQLdb.cursors.DictCursor)
+    curs.execute('''SELECT 
+        name, pid, cid, uid, photo, wateringFreq, droughtResist
+        FROM contact_profile, user_profile, 
+        WHERE user_profile.username = %s
+        AND user_profile.uid =  contact_profile.uid
+        ''', (username))
+    results = curs.fetchall()
+    return results
 
+# given a relationship and relationship wateringFrequency and droughtResist
+# return a number (1-3) indicating the health of that relationship
+def det_drought_state(wateringFreq, droughtResist, uid, cid):
+    curs = conn.cursor(MySQLdb.cursors.DictCursor)
+    curs.execute('''SELECT 
+        MAX(date) as latest_date
+        FROM interaction_log 
+        WHERE uid = %s
+        AND cid =  %s
+        ''', (uid, cid))
+    results = curs.fetchall()
+    today = time.today()
+    recent = today - results[latest_date]
+    if recent < wateringFreq:
+        return 1
+    elif recent < wateringFreq and r
 
 if __name__ == '__main__':
     port = os.getuid()

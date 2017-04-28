@@ -56,7 +56,7 @@ create table interaction_log (
        cid integer not null, 
        uid integer not null,
        primary key (iid, cid, uid),
-       date int, 
+       date date, 
        quality int, 
        notes varchar(256),
        INDEX(iid),
