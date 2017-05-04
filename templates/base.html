@@ -10,8 +10,8 @@
 </head>
 
 <body>
+  {% block menu %}
   <div id="menu">
-    {% block menu %}
     <ul>
       <li><a href="/garden/">garden</a></li>
       <!--       will change addcontact so that it is accessible only from from garden -->
@@ -19,9 +19,9 @@
       <li><a href="/add/">record interactions</a></li>
       <li><a href="/logout/">logout</a></li>  
     </ul>
-    {% endblock %}
-
   </div>
+  {% endblock %}
+  
   {% with messages = get_flashed_messages() %}
   {% if messages %}
   <div id="messages">

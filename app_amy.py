@@ -21,14 +21,16 @@ conn = dbconn2.connect(DSN)
 def index():
     if 'username' in session:
         username = session['username']
-        return 'Logged in as ' + username + '<br>' + \
+        logged_in = 'Logged in as ' + username + '<br>' + \
         "  <a href='/logout'> click here to log out</a></b>"
-    return '''<p>You are not logged in </p> 
-        <p><a href='/login'></b>
-        click here to log in</b></a></p>
-        <p><a href='/signup/'></b>
-        click here to sign up</b></a></p>
-        '''
+        return render_template("start.html", beginhere=logged_in)
+    not_logged_in = '''<p>You are not logged in </p> 
+    <p><a href='/login'></b>
+    click here to log in</b></a></p>
+    <p><a href='/signup/'></b>
+    click here to sign up</b></a></p>
+    '''
+    return render_template("start.html", beginhere=not_logged_in)
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -42,15 +44,17 @@ def login():
             return redirect(url_for('garden', uid=uid))
         else:
             return redirect(url_for('login'))
-    return '''
+    login_form = '''
     <form action="" method="POST">
         <label><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="username" required>
+        <br>
         <label><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="password" required>
         <p><input type=submit value=Login></p>
     </form>
     '''
+    return render_template("login.html", login=login_form)
 
 
 @app.route('/logout/')
