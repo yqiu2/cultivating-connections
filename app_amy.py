@@ -12,15 +12,10 @@ import hashlib
 from datetime import date
 
 app.secret_key = 'cultivating connections is good for you.'
-
 # ESTABLISHES CONNECTION TO MY DATABASE
 DSN['db'] = 'yqiu2_db'
 conn = dbconn2.connect(DSN)
  
-# session store has username and uid
-# session['username'] = ''
-# session['uid'] = ''
-
 
 @app.route('/')
 def index():
@@ -34,6 +29,7 @@ def index():
         <p><a href='/signup/'></b>
         click here to sign up</b></a></p>
         '''
+
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -56,12 +52,14 @@ def login():
     </form>
     '''
 
+
 @app.route('/logout/')
 def logout():
     # remove the username from the session if it is there
     session.pop('username', None)
     session.pop('uid', None)
     return redirect(url_for('index'))
+
 
 def check_login(session, conn):
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
@@ -81,6 +79,7 @@ def check_login(session, conn):
         return results[0]['uid']
     else:
         return None
+
 
 @app.route('/signup/', methods = ['GET', 'POST'])
 def signup():
@@ -115,8 +114,6 @@ def signup():
                         VALUES ( %s, %s, %s, %s, %s)
                         ''', (fname, sname, "", hash_pass, username))
                     print "added "+username+"to our system"
-                    flash("welcome "+ username+ " to our app")
-
                     curs.execute('''
                         SELECT uid
                         FROM user_profile
@@ -124,6 +121,7 @@ def signup():
                         ''', (username,))
                     result = curs.fetchall()
                     uid = result[0]['uid']
+                    session['uid']= uid
                     return redirect(url_for('garden'))
                 else:
                     flash("your passwords do not match")
@@ -132,17 +130,17 @@ def signup():
         print "sign up get"
     return render_template("signup.html")
 
+
 # DISPLAY GARDEN 
 @app.route('/garden/', methods=["GET", "POST"])
 def garden():
     uid = session['uid']
     print 'uid', uid
-    # temporary !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    uid = 1
     contacts = find_contacts(uid)
     garden_contents = display_contacts(contacts)
     return render_template("garden.html", garden=garden_contents)
     
+
 # find_contacts finds all of your contacts
 def find_contacts(uid):
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
@@ -159,6 +157,7 @@ def find_contacts(uid):
         plant['url'] = url
 
     return results
+
 
 # find_state returns the proper url of the image 
 # matching your plant and your plant's state
@@ -180,10 +179,8 @@ def find_state(plant):
     state = 0 
     if len(results) > 0:
         datediff = results[0]['datediff']
-
         wateringFreq = plant['wateringFreq']
         droughtResist = plant['droughtResist']
-        
         if datediff < wateringFreq:
             state = 1
         elif datediff < wateringFreq and datediff < wateringFreq+droughtResist:
@@ -210,6 +207,7 @@ def find_state(plant):
         url = ""
     plant['url'] = url 
     return state, url
+
 
 # display contacts generates the html to display your garden
 def display_contacts(contacts):
@@ -239,6 +237,7 @@ def display_contacts(contacts):
 
     res += "</table>\n"
     return res
+
 
 # display plant generates the html that displays a plant 
 def display_plant(contact):

@@ -10,9 +10,11 @@
 
 {% block content %}
 <div id="garden">
-	{{garden}}
+	{{ garden|safe }} 
 </div>
-
+<div id="addContact">
+	<p><a href='/addcontact/'>add contact</a><p>
+</div>
 {% endblock %}
 
 {% block footer %}
