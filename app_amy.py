@@ -16,11 +16,11 @@ app.secret_key = 'cultivating connections is good for you.'
 # ESTABLISHES CONNECTION TO MY DATABASE
 DSN['db'] = 'yqiu2_db'
 conn = dbconn2.connect(DSN)
+ 
+# session store has username and uid
+# session['username'] = ''
+# session['uid'] = ''
 
-session = {} 
-# session has username and uid
-session['username'] = ''
-session.pop('username', None)
 
 @app.route('/')
 def index():
@@ -43,7 +43,7 @@ def login():
         uid = check_login(session, conn)
         if uid != None:
             session['uid'] = uid
-            return render_template(url_for('garden', uid=uid))
+            return redirect(url_for('garden', uid=uid))
         else:
             return redirect(url_for('login'))
     return '''
@@ -60,6 +60,7 @@ def login():
 def logout():
     # remove the username from the session if it is there
     session.pop('username', None)
+    session.pop('uid', None)
     return redirect(url_for('index'))
 
 def check_login(session, conn):
@@ -123,7 +124,7 @@ def signup():
                         ''', (username,))
                     result = curs.fetchall()
                     uid = result[0]['uid']
-                    return render_template(url_for('garden', uid=uid))
+                    return redirect(url_for('garden'))
                 else:
                     flash("your passwords do not match")
                     return render_template("signup.html")
@@ -133,38 +134,42 @@ def signup():
 
 # DISPLAY GARDEN 
 @app.route('/garden/', methods=["GET", "POST"])
-def garden(uid):
-    username = session['username']
+def garden():
+    uid = session['uid']
+    print 'uid', uid
+    # temporary !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    uid = 1
     contacts = find_contacts(uid)
     garden_contents = display_contacts(contacts)
-    return render_template("garden", garden=garden_contents)
+    return render_template("garden.html", garden=garden_contents)
     
+# find_contacts finds all of your contacts
 def find_contacts(uid):
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
     curs.execute('''SELECT 
         name, pid, cid, uid, photo, wateringFreq, droughtResist
         FROM contact_profile
-        AND uid = %s
+        WHERE uid = %s
         ''', (uid,))
     results = curs.fetchall()
 
     for plant in results:
-        state, url = det_drought_state(plant)
+        state, url = find_state(plant)
         plant['state'] = state
         plant['url'] = url
 
     return results
 
-# given a plant representing relationship between user and contact
-# return a number (1-3) indicating the health of that relationship
-# as well as the associated plant image url
-def det_drought_state(plant):
+# find_state returns the proper url of the image 
+# matching your plant and your plant's state
+def find_state(plant):
     # find the most recent interaction you've had with the person
     uid = plant['uid']
+    pid = plant['pid']
     cid = plant['cid']
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
     curs.execute('''SELECT 
-        MAX(date) as latest_date
+        DATEDIFF(CURDATE(), MAX(interaction_log.date))as datediff
         FROM interaction_log 
         WHERE uid = %s
         AND cid =  %s
@@ -174,13 +179,14 @@ def det_drought_state(plant):
     # find the plant state
     state = 0 
     if len(results) > 0:
+        datediff = results[0]['datediff']
+
         wateringFreq = plant['wateringFreq']
         droughtResist = plant['droughtResist']
-        today = time.today()
-        recent = today - results[latest_date]
-        if recent < wateringFreq:
+        
+        if datediff < wateringFreq:
             state = 1
-        elif recent < wateringFreq and recent < wateringFreq+droughtResist:
+        elif datediff < wateringFreq and datediff < wateringFreq+droughtResist:
             state = 2
         else: 
             state = 3
@@ -205,13 +211,13 @@ def det_drought_state(plant):
     plant['url'] = url 
     return state, url
 
-
+# display contacts generates the html to display your garden
 def display_contacts(contacts):
     NUM_COLS = 4
     res = ""
     res += "<table>\n"
     rowstarted = False
-    for i, contact in contacts:
+    for i, contact in enumerate(contacts):
         if i == len(contacts):
             res += "<td>\n"+display_plant(
                 contact)+"</td>\n"
@@ -225,15 +231,16 @@ def display_contacts(contacts):
             rowstarted = True
         elif i%NUM_COLS == 0 and not rowstarted:
             res += "<tr>\n"
-            res += "<td>\n"+display_plant(
-                contact)+"</td>\n"
+            res += "<td>\n"+display_plant(contact)+"</td>\n"
             rowstarted = True
         else:
            res += "<td>\n"+display_plant(
                 contact)+"</td>\n"
 
     res += "</table>\n"
+    return res
 
+# display plant generates the html that displays a plant 
 def display_plant(contact):
     res = ""
     res += "<img src="+contact['url']+" alt="+str(contact['name'])+">"
@@ -246,6 +253,8 @@ def display_plant(contact):
         res += "<p>water now</p>"
     else:
         res +="<p>your plant is dying</p>"
+    return res
+
 
 
 if __name__ == '__main__':
@@ -253,5 +262,3 @@ if __name__ == '__main__':
     app.debug = True
     print('Running on port '+str(port))
     app.run('0.0.0.0',port)
-
-
