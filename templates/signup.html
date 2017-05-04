@@ -1,12 +1,5 @@
 {% extends "base.html" %}
-{% block title %}AddContact{% endblock %}
-{% block head %}
-  {{ super() }}
-{% endblock %}
 
-{% block menu %}
-  {{ super() }}
-{% endblock %}
 
 {% block content %}
 <div id="signup">
@@ -27,14 +20,14 @@
 			</tr>
 			<tr>
 				<td><label for="password1">Password</label></td>
-				<td><input name='password1'></td> 
+				<td><input type="password" name='password1'></td> 
 			</tr>
 			<tr>
 				<td><label for="password2">Password again</label></td>
-				<td><input name='password2'></td>
+				<td><input type="password" name='password2'></td>
 			</tr>
 			<tr>
-				<input type="submit">
+				<td><input type="submit"></td>
 			</tr>
 		</table>
 	</form>

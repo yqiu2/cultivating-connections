@@ -5,7 +5,7 @@ drop table if exists plant;
 drop table if exists user_profile; 
 
 create table user_profile (
-       uid integer not null primary key,	     
+       uid integer not null primary key auto_increment,	     
        firstName varchar(20) not null, 
        lastName varchar(20) not null,       
        password varchar(256) not null,

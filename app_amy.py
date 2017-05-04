@@ -65,7 +65,7 @@ def logout():
 def check_login(session, conn):
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
     username = session['username']
-    hash_pass = hashlib.sha256(session['password'])
+    hash_pass = hashlib.sha256(session['password']).hexdigest()
     print 'hashpass', str(hash_pass)
     curs.execute('''SELECT 
         uid, hashpass
@@ -83,16 +83,7 @@ def check_login(session, conn):
 
 @app.route('/signup/', methods = ['GET', 'POST'])
 def signup():
-    print '''
-
-
-
-
-
-
-
-
-in signup'''
+    print '''in signup'''
     if request.method == 'POST':
         username = request.form['username'].strip()
         fname = request.form['fname'].strip()
@@ -107,14 +98,15 @@ in signup'''
                 FROM user_profile
                 WHERE username=%s
                 ''', (username,))
-            if len(curs.fetchall()) > 0 :
-                flash("This username is already taken")
+            results = curs.fetchall()
+            if len(results) > 0 :
+                flash("This username is already taken"+ str(results))
                 return render_template("signup.html")
             else:
                 # unused username
                 if password2 == password2:
                     # the user really intended this password!
-                    hash_pass = hashlib.sha256(password1)
+                    hash_pass = hashlib.sha256(password1).hexdigest()
                     curs = conn.cursor(MySQLdb.cursors.DictCursor)
                     curs.execute('''
                         INSERT INTO user_profile 
@@ -123,7 +115,15 @@ in signup'''
                         ''', (fname, sname, "", hash_pass, username))
                     print "added "+username+"to our system"
                     flash("welcome "+ username+ " to our app")
-                    return redirect(url_for('garden', uid))
+
+                    curs.execute('''
+                        SELECT uid
+                        FROM user_profile
+                        where username = %s
+                        ''', (username,))
+                    result = curs.fetchall()
+                    uid = result[0]['uid']
+                    return render_template(url_for('garden', uid=uid))
                 else:
                     flash("your passwords do not match")
                     return render_template("signup.html")
@@ -136,7 +136,8 @@ in signup'''
 def garden(uid):
     username = session['username']
     contacts = find_contacts(uid)
-    display_contacts(contacts)
+    garden_contents = display_contacts(contacts)
+    return render_template("garden", garden=garden_contents)
     
 def find_contacts(uid):
     curs = conn.cursor(MySQLdb.cursors.DictCursor)
@@ -244,7 +245,7 @@ def display_plant(contact):
     elif contact['state'] == 2:
         res += "<p>water now</p>"
     else:
-        res +=""
+        res +="<p>your plant is dying</p>"
 
 
 if __name__ == '__main__':
