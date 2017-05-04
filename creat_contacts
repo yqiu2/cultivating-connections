@@ -8,7 +8,8 @@ create table user_profile (
        uid integer not null primary key,	     
        firstName varchar(20) not null, 
        lastName varchar(20) not null,       
-       password varchar(25) not null, 	         
+       password varchar(256) not null,
+       hashpass varchar(256) not null, 	         
        username varchar(25) not null
 )
 ENGINE = InnoDB; 
@@ -67,8 +68,8 @@ create table interaction_log (
 )
 ENGINE = InnoDB; 
 
-insert into user_profile (uid, firstName, lastName, password, username)
-values (1, 'Vicki', 'Ngan', 'hihihi', 'vngan');
+insert into user_profile (uid, firstName, lastName, password, hashpass, username)
+values (1, 'Vicki', 'Ngan', 'hihihi', 'f42ff50167e9c6cc7e45a597368484d622fcd95aae12d3704b647023648bec9e', 'vngan');
 
 insert into plant (pid, name, description, website)
 values (1, 'Rhoeo', 'aka Moses-in-the-cradle or Boat Lily for its little white
