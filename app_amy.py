@@ -89,7 +89,24 @@ def signup():
         fname = request.form['fname'].strip()
         sname = request.form['sname'].strip()
         password1 = request.form['password1']
-        password2 = request.form['password2']   
+        password2 = request.form['password2']
+        if username == "":
+            flash("please supply a username")
+        if fname == "":
+            flash("please supply your name")
+        if sname == "":
+            flash("please supply your name")
+        if password1 == "":
+            flash("please select a password")
+        if password2 == "":
+            flash("please select a password")
+        if password1 != password2:
+            flash("your passwords do not match")
+        if (username == "" or fname == "" or sname == "" 
+            or password1 == "" or password2 == ""
+            or password1 != password2):
+            return render_template("signup.html")
+
         if username != "":
             # you can add this username and password
             curs = conn.cursor(MySQLdb.cursors.DictCursor)
@@ -104,8 +121,6 @@ def signup():
                 return render_template("signup.html")
             else:
                 # unused username
-                if password2 == password2:
-                    # the user really intended this password!
                     hash_pass = hashlib.sha256(password1).hexdigest()
                     curs = conn.cursor(MySQLdb.cursors.DictCursor)
                     curs.execute('''
@@ -123,9 +138,6 @@ def signup():
                     uid = result[0]['uid']
                     session['uid']= uid
                     return redirect(url_for('garden'))
-                else:
-                    flash("your passwords do not match")
-                    return render_template("signup.html")
     else:
         print "sign up get"
     return render_template("signup.html")
